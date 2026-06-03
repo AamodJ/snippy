@@ -135,6 +135,9 @@ get_focused_window_class() {
     hyprland)
       hyprctl activewindow -j | jq -r '.class | ascii_downcase'
       ;;
+    mango)
+      mmsg get focusing-client | jq -r '.appid | ascii_downcase'
+      ;;
     esac
   else
     xdotool getwindowfocus getwindowclassname | tr '[:upper:]' '[:lower:]'
@@ -152,6 +155,9 @@ get_focused_window_name() {
       ;;
     hyprland)
       hyprctl activewindow -j | jq -r '.title'
+      ;;
+    mango)
+      mmsg get focusing-client | jq -r '.title | ascii_downcase'
       ;;
     esac
   else
