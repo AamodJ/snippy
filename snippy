@@ -525,9 +525,7 @@ run() {
   # replace {clipboard} by the clipboard content
   # use awk to handle correctly multiline clipboard
   if grep -q "$placeholder_clipboard" "$tmpfile"; then
-    export env_clipboard="$current_clipboard"
-
-    awk -i inplace -v placeholder="$placeholder_clipboard" '
+    env_clipboard="$current_clipboard" awk -i inplace -v placeholder="$placeholder_clipboard" '
     {
         out = $0
         while ((i = index(out, placeholder)) > 0) {
@@ -535,8 +533,6 @@ run() {
         }
         print out
     }' "$tmpfile"
-
-    unset env_clipboard
 
     # remove last EOL
     perl -pi -e 'chomp if eof' "$tmpfile"
