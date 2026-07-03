@@ -44,22 +44,22 @@ repos:
       - id: typos
   # Png
   - repo: https://github.com/oxipng/oxipng
-    rev: d54e7c04ea58170167d95d9b2b2ec07571602fe2 # frozen: v10.1.0
+    rev: 628e241e23f368097883807fa6e985ccf7c00357 # frozen: v10.1.1
     hooks:
       - id: oxipng
         args: ["-o", "4", "--strip", "safe", "--alpha"]
   # Github action
   - repo: https://github.com/rhysd/actionlint
-    rev: 393031adb9afb225ee52ae2ccd7a5af5525e03e8 # frozen: v1.7.11
+    rev: 914e7df21a07ef503a81201c76d2b11c789d3fca # frozen: v1.7.12
     hooks:
       - id: actionlint
   - repo: https://github.com/zizmorcore/zizmor-pre-commit
-    rev: ea2eb407b4cbce87cf0d502f36578950494f5ac9 # frozen: v1.23.1
+    rev: e3eebf65325ccc992422292cb7a4baee967cf815 # frozen: v1.26.1
     hooks:
       - id: zizmor
   # Markdown
   - repo: https://github.com/rvben/rumdl-pre-commit
-    rev: e8689b0f1c8828c81c5bde980a5e285e22787455 # frozen: v0.1.57
+    rev: 6853b8952a3b2f746baf094c9ce7adbeec2e44bb # frozen: v0.2.21
     hooks:
       - id: rumdl-fmt
         args:
@@ -67,7 +67,7 @@ repos:
           - MD013,MD033
   # Bash
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: 2a30809d16bc7a60d9b97353c797f42b510d3368 # frozen: v3.12.0-2
+    rev: 05c1426671b9237fb5e1444dd63aa5731bec0dfb # frozen: v3.13.1-1
     hooks:
       - id: shfmt
   - repo: local
