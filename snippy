@@ -69,10 +69,6 @@ readonly placeholder_cursor="{cursor}"
 readonly placeholder_clipboard="{clipboard}"
 readonly placeholder_clipboard_urlencode="{clipboard_urlencode}"
 
-tmpfile=$(mktemp)
-readonly tmpfile
-trap 'rm -f $tmpfile' EXIT HUP INT TRAP TERM
-
 # colors
 readonly normal="\e[0m"
 readonly bold="\e[1m"
@@ -427,6 +423,10 @@ run() {
   local paste="${1:-true}"
   local current_clipboard cursor_line cursor_line_position cursor_line cursor_position cursor_line_length
 
+  tmpfile=$(mktemp)
+  readonly tmpfile
+  trap 'rm -f $tmpfile' EXIT HUP INT TRAP TERM
+
   # just return if nothing was selected
   [ -z "${snippet}" ] && return 1
 
@@ -655,7 +655,7 @@ main() {
     if (($# > 0)); then
       snippet="$*"
       coproc run >/dev/null 2>&1
-      exit 0
+      exit
     fi
     list 'icon'
     ;;
