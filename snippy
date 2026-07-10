@@ -69,10 +69,6 @@ readonly placeholder_cursor="{cursor}"
 readonly placeholder_clipboard="{clipboard}"
 readonly placeholder_clipboard_urlencode="{clipboard_urlencode}"
 
-tmpfile=$(mktemp)
-readonly tmpfile
-trap 'rm -f $tmpfile' EXIT HUP INT TRAP TERM
-
 # colors
 readonly normal="\e[0m"
 readonly bold="\e[1m"
@@ -80,7 +76,11 @@ readonly underline="\e[4m"
 
 # Default
 script_content=false
-action=gui
+if [[ -n ${ROFI_RETV+x} ]]; then
+  action=rofi
+else
+  action=gui
+fi
 snippet=
 rofi_sort="-sort"
 rofi_sort_method="-sorting-method fzf"
@@ -262,7 +262,6 @@ ${bold}Options${normal}
 ${bold}Actions${normal}
   ${bold}gui${normal} \t\tBrowse snippet and paste it in the focused window ${underline}(default)${normal}
   ${bold}cli${normal} \t\tlist snippet in cli mode, only copy snippet in the paste buffer
-  ${bold}rofi${normal} \t\tlist snippet in cli mode for rofi input. Accept an argument with the chosen snippet to paste it.
   ${bold}edit${normal} \t\tBrowse snippet and edit it
   ${bold}add${normal} <name> \tAdd a new snippet
   ${bold}list${normal} \t\tlist snippet
@@ -311,7 +310,9 @@ parse_options() {
       break
       ;;
     *)
-      action="$1"
+      if [ -z ${ROFI_RETV+x} ]; then
+        action="$1"
+      fi
       return
       ;;
     esac
@@ -380,7 +381,7 @@ _snippy_completion() {
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
     opts="-h --help -v --version -s --sort -m --sorting-method"
-    actions="gui cli edit add list rofi cat completion"
+    actions="gui cli edit add list cat completion"
 
     # Complete option values
     case "${prev}" in
@@ -426,6 +427,10 @@ gui() {
 run() {
   local paste="${1:-true}"
   local current_clipboard cursor_line cursor_line_position cursor_line cursor_position cursor_line_length
+
+  tmpfile=$(mktemp)
+  readonly tmpfile
+  trap 'rm -f $tmpfile' EXIT HUP INT TRAP TERM
 
   # just return if nothing was selected
   [ -z "${snippet}" ] && return 1
@@ -651,11 +656,16 @@ main() {
     run false
     ;;
   'rofi')
-    shift
-    if (($# > 0)); then
+    # TODO: Remove this in 1 or 2 release
+    # This is to not break workflow of people using `snippy rofi`.
+    # But I don't like it, this will lead to bugs
+    if [[ -n ${1+x} ]] && [[ "$1" == "rofi" ]]; then
+      shift
+    fi
+    if ((ROFI_RETV >= 1)); then
       snippet="$*"
       coproc run >/dev/null 2>&1
-      exit 0
+      exit
     fi
     list 'icon'
     ;;
