@@ -299,7 +299,6 @@ Options
 Actions
   gui 		Browse snippet and paste it in the focused window (default)
   cli 		list snippet in cli mode, only copy snippet in the paste buffer
-  rofi 		list snippet in cli mode for rofi input. Accept an argument with the chosen snippet to paste it.
   edit 		Browse snippet and edit it
   add <name> 	Add a new snippet
   list 		list snippet
@@ -319,10 +318,10 @@ snippy gui
 
 **Use it directly inside rofi:**
 
-If you already have a keybinding for rofi, you can add snippy as a mod:
+If you already have a keybinding for rofi, you can add snippy as a mod, it will autodetect rofi:
 
 ```bash
-rofi -theme-str 'element-icon { size: 3ch;}' -combi-modi 'snippets:snippy rofi' -show combi -modi combi
+rofi -theme-str 'element-icon { size: 3ch;}' -combi-modi 'snippets:snippy' -show combi -modi combi
 ```
 
 **Browse snippets in terminal:**
