@@ -1,47 +1,125 @@
 {
-    description = "Snippy Flake";
+  description = "Snippy Flake";
 
-    inputs = {
-        nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    };
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
+  };
 
-    outputs = { self, nixpkgs }: 
+  outputs =
+    { self, nixpkgs }:
     let
-        system = "x86_64-linux";
-        pkgs = nixpkgs.legacyPackages.${system};
+      system = "x86_64-linux";
+      pkgs = nixpkgs.legacyPackages.${system};
 
-        baseDeps = with pkgs; [ rofi fzf jq gettext perl ];
+      baseDeps = with pkgs; [
+        rofi
+        fzf
+        jq
+        gettext
+        perl
+      ];
 
-        buildPackage = { x11, wayland }:
+      buildPackage =
+        { x11, wayland }:
         let
-            deps = baseDeps ++ (
-                with pkgs; 
-                if wayland then [ wtype wl-clipboard ] 
-                else [ xdotool xclip xsel ] 
+          deps =
+            baseDeps
+            ++ (
+              with pkgs;
+              lib.optionals wayland [
+                wtype
+                wl-clipboard
+              ]
+            )
+            ++ (
+              with pkgs;
+              lib.optionals x11 [
+                xdotool
+                xclip
+                xsel
+              ]
             );
         in
         pkgs.stdenv.mkDerivation {
-            pname = "snippy";
-            version = "git";
+          pname = "snippy";
+          version = "git";
 
-            nativeBuildInputs = [ pkgs.makeWrapper ];
-          
-            src = ./.;
+          nativeBuildInputs = [ pkgs.makeWrapper ];
 
-            installPhase = ''
-                mkdir -p $out/bin
-                cp snippy $out/bin
+          src = ./.;
 
-                wrapProgram $out/bin/snippy\
-                  --prefix PATH : ${pkgs.lib.makeBinPath deps}
-            '';
+          installPhase = ''
+            mkdir -p $out/bin
+            cp snippy $out/bin
+
+            wrapProgram $out/bin/snippy\
+              --prefix PATH : ${pkgs.lib.makeBinPath deps}
+          '';
         };
     in
     {
-        packages.${system} = {
-            default = buildPackage { x11 = false; wayland = true ; };
-            wayland = buildPackage { x11 = false; wayland = true ; };
-            x11     = buildPackage { x11 = true ; wayland = false; };
+      packages.${system} = {
+        default = buildPackage {
+          x11 = true;
+          wayland = true;
+        };
+        wayland = buildPackage {
+          x11 = false;
+          wayland = true;
+        };
+        x11 = buildPackage {
+          x11 = true;
+          wayland = false;
+        };
+      };
+
+      homeManagerModule =
+        {
+          config,
+          lib,
+          pkgs,
+          ...
+        }:
+        let
+          cfg = config.programs.snippy;
+        in
+        {
+          options.programs.snippy = {
+            enable = lib.mkEnableOption "Whether to enable snippy snippets manager.";
+
+            wayland.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Enable only wayland support";
+            };
+
+            x11.enable = lib.mkOption {
+              type = lib.types.bool;
+              default = false;
+              description = "Enable only x11 support";
+            };
+
+            package = lib.mkOption {
+              type = lib.types.package;
+              default =
+                let
+                  selectedPackage = {
+                    "true-false" = self.packages.${pkgs.system}.wayland;
+                    "false-true" = self.packages.${pkgs.system}.x11;
+                    "true-true" = self.packages.${pkgs.system}.default;
+                    "false-false" = self.packages.${pkgs.system}.default;
+                  };
+                  key = "${lib.boolToString cfg.wayland.enable}-${lib.boolToString cfg.x11.enable}";
+                in
+                selectedPackage.${key};
+
+              description = "Snippy package to install. Defaults to wayland + x11 support";
+            };
+          };
+
+          config = lib.mkIf cfg.enable {
+            home.packages = [ cfg.package ];
+          };
         };
     };
 }

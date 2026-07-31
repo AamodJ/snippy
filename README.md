@@ -15,6 +15,7 @@ Snippy is a versatile command-line snippet manager that seamlessly integrates wi
 
 - [Installation](#installation)
   - [Arch Linux](#arch-linux)
+  - [Nix](#nix)
   - [Manual Installation](#manual-installation)
   - [Prerequisites](#prerequisites)
   - [Initial Setup](#initial-setup)
@@ -61,6 +62,33 @@ Install using your preferred [AUR helper](https://wiki.archlinux.org/index.php/A
 ```bash
 yay -S snippy-snippet
 ```
+
+### Nix
+
+The flake provides home manager modules with options to enable wayland / x11 support. 
+
+Add it to your flake inputs
+```nix
+snippy = {
+  url = "github:BarbUk/snippy";
+  inputs.nixpkgs.follows = "nixpkgs";
+};
+```
+
+Enable it in your home configuration
+```nix
+programs.snippy.enable = true;
+
+# Without specifying wayland.enable or x11.enable, the module
+# will install both wayland and x11 dependencies
+
+programs.snippy.wayland.enable = true;       # Does not install X11 dependencies
+programs.snippy.x11.enable = true;           # Does not install Wayland dependencies
+```
+
+Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon). 
+
+`darwin` systems are currently **unsupported**. See [#34](https://github.com/BarbUk/snippy/issues/34)
 
 ### Manual Installation
 
