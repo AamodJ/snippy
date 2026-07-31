@@ -42,6 +42,7 @@ repos:
     rev: 631208b7aac2daa8b707f55e7331f9112b0e062d # frozen: v1.44.0
     hooks:
       - id: typos
+        language: system
   # Png
   - repo: https://github.com/oxipng/oxipng
     rev: 628e241e23f368097883807fa6e985ccf7c00357 # frozen: v10.1.1
@@ -57,11 +58,13 @@ repos:
     rev: e3eebf65325ccc992422292cb7a4baee967cf815 # frozen: v1.26.1
     hooks:
       - id: zizmor
+        language: system
   # Markdown
   - repo: https://github.com/rvben/rumdl-pre-commit
     rev: 6853b8952a3b2f746baf094c9ce7adbeec2e44bb # frozen: v0.2.21
     hooks:
       - id: rumdl-fmt
+        language: system
         args:
           - --disable
           - MD013,MD033
