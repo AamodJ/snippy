@@ -65,9 +65,10 @@ yay -S snippy-snippet
 
 ### Nix
 
-The flake provides home manager modules with options to enable wayland / x11 support. 
+The flake provides home manager modules with options to enable wayland / x11 support.
 
 Add it to your flake inputs
+
 ```nix
 snippy = {
   url = "github:BarbUk/snippy";
@@ -76,6 +77,7 @@ snippy = {
 ```
 
 Enable it in your home configuration
+
 ```nix
 programs.snippy.enable = true;
 
@@ -86,7 +88,7 @@ programs.snippy.wayland.enable = true;       # Does not install X11 dependencies
 programs.snippy.x11.enable = true;           # Does not install Wayland dependencies
 ```
 
-Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon). 
+Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon).
 
 `darwin` systems are currently **unsupported**. See [#34](https://github.com/BarbUk/snippy/issues/34)
 
