@@ -92,6 +92,16 @@ Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon)
 
 `darwin` systems are currently **unsupported**. See [#34](https://github.com/BarbUk/snippy/issues/34)
 
+**Note:** rofi integration is currently **unsupported**
+
+```bash
+# Call snippy with
+snippy
+
+# This won't work. rofi integration is WIP
+rofi -theme-str 'element-icon { size: 3ch;}' -combi-modi 'snippets:snippy' -show combi -modi combi
+```
+
 ### Manual Installation
 
 **For local user installation:**
