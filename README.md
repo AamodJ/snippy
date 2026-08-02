@@ -81,11 +81,10 @@ Enable it in your home configuration
 ```nix
 programs.snippy.enable = true;
 
-# Without specifying wayland.enable or x11.enable, the module
-# will install both wayland and x11 dependencies
-
-programs.snippy.wayland.enable = true;       # Does not install X11 dependencies
-programs.snippy.x11.enable = true;           # Does not install Wayland dependencies
+# Explicitly disable Wayland / X11 support
+# Defaults to installing both dependencies
+programs.snippy.enableWayland = false;
+programs.snippy.enableX11 = false;
 ```
 
 Currently only `x86_64-linux` is supported (`aarch64-linux` support coming soon).

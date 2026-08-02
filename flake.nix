@@ -87,16 +87,16 @@
           options.programs.snippy = {
             enable = lib.mkEnableOption "Whether to enable snippy snippets manager.";
 
-            wayland.enable = lib.mkOption {
+            enableWayland = lib.mkOption {
               type = lib.types.bool;
-              default = false;
-              description = "Enable only wayland support";
+              default = true;
+              description = "Enable wayland support";
             };
 
-            x11.enable = lib.mkOption {
+            enableX11 = lib.mkOption {
               type = lib.types.bool;
-              default = false;
-              description = "Enable only x11 support";
+              default = true;
+              description = "Enable x11 support";
             };
 
             package = lib.mkOption {
@@ -109,7 +109,7 @@
                     "true-true" = self.packages.${pkgs.system}.default;
                     "false-false" = self.packages.${pkgs.system}.default;
                   };
-                  key = "${lib.boolToString cfg.wayland.enable}-${lib.boolToString cfg.x11.enable}";
+                  key = "${lib.boolToString cfg.enableWayland}-${lib.boolToString cfg.enableX11}";
                 in
                 selectedPackage.${key};
 
